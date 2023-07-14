@@ -7,7 +7,7 @@ const byte ledGreen = P3_2;
 const byte ledYellow = P3_3;
 const byte ledRed = P3_4;
 
-const unsigned int IGNITE_TIME = 12000;
+const unsigned int IGNITE_TIME = 2000;
 const unsigned int SLEEP_TIME = 500;
 
 void Switch_On_Abstact(byte color, unsigned int ignite_time, unsigned int sleep_time) {
