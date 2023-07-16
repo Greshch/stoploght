@@ -1,44 +1,69 @@
 #include <NanitLib.h>
 
-#define ON 1
-#define OFF 0
+byte const rLed = P3_2;
+byte const yLed = P3_3;
+byte const gLed = P3_4;
 
-const byte ledGreen = P3_2;
-const byte ledYellow = P3_3;
-const byte ledRed = P3_4;
+int const PAUSE = 500;
+int const BLINK_IGNITE = 250;
+int const BLINK_PAUSE = 250;
+int const rTime = 3000;
+int const yTime = 1500;
+int const gTime = 3000;
 
-const unsigned int IGNITE_TIME = 2000;
-const unsigned int SLEEP_TIME = 500;
+//byte count; // = 0
 
-void Switch_On_Abstact(byte color, unsigned int ignite_time, unsigned int sleep_time) {
-  digitalWrite(color, ON); 
-  delay(ignite_time);
-  digitalWrite(color, OFF); 
-  delay(sleep_time);
-}
-
-void Switch_On_Red() {
-  Switch_On_Abstact(ledRed, IGNITE_TIME, SLEEP_TIME);
-}
-
-void Switch_On_Yellow() {
-  Switch_On_Abstact(ledYellow, IGNITE_TIME >> 1, SLEEP_TIME);
-}
-
-void Switch_On_Green() {
-  Switch_On_Abstact(ledGreen,IGNITE_TIME, SLEEP_TIME);
-}
+enum Colors {
+  E_RED,
+  E_YELLOW,
+  E_GREEN,
+  E_YELLOW2,
+  E_SIZE
+};
 
 void setup() {
   Nanit_Base_Start();
-  pinMode(ledGreen, OUTPUT);
-  pinMode(ledYellow, OUTPUT);
-  pinMode(ledRed, OUTPUT);
+  pinMode(rLed, OUTPUT);
+  pinMode(yLed, OUTPUT);
+  pinMode(gLed, OUTPUT);
 }
 
 void loop() {
-  Switch_On_Green();
-  Switch_On_Yellow();
-  Switch_On_Red();
-  Switch_On_Yellow();
+  static byte count = 0;
+  if (count == E_RED) {
+    shining(1, 0, 0, rTime);
+    blinking(1, 0, 0, 3, BLINK_IGNITE, BLINK_PAUSE);
+  } else if (count == E_YELLOW) {
+    shining(0, 1, 0, yTime);
+  } else if (count == E_GREEN) {
+    shining(0, 0, 1, gTime);
+    blinking(0, 0, 1, 3, BLINK_IGNITE, BLINK_PAUSE);
+  } else if (count == E_YELLOW2) {
+    shining(0, 1, 0, yTime);
+  }
+  ++count;
+  count %= E_SIZE; 
+}
+
+void ledOn(bool rSig, bool ySig, bool gSig) {
+  digitalWrite(rLed, rSig);
+  digitalWrite(yLed, ySig);
+  digitalWrite(gLed, gSig);
+}
+
+void shining(bool rSig, bool ySig, bool gSig, int ignite_time) {
+  ledOn(rSig, ySig, gSig);
+  delay(ignite_time);
+  ledOn(0, 0, 0);
+  delay(PAUSE);
+}
+
+void blinking(bool rSig, bool ySig, bool gSig, byte times, int ignite_time, int sleep_time) {
+  for (int i = 0; i < times; ++i) {
+    ledOn(rSig, ySig, gSig);
+    delay(ignite_time);
+    ledOn(0, 0, 0);
+    delay(sleep_time);
+  }
+  delay(PAUSE);
 }
