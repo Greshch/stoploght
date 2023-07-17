@@ -11,13 +11,13 @@ int const rTime = 3000;
 int const yTime = 1500;
 int const gTime = 3000;
 
-struct S_Light {
+struct S_Light {// структура для зберігання данних про світлофор(номера пінів червоного, жовтого і зеленого діодів)
   byte rLed;
   byte yLed;
   byte gLed;
 } first, second;
 
-struct S_Matrix3 {
+struct S_Matrix3 { // структура для зручного налаштування пінів для горіння діодів
   byte fst;
   byte scn;
   byte thr;
@@ -84,10 +84,7 @@ void loop() {
   count %= E_SIZE; 
 }
 
-void ledOn(S_Light& light, /*bool rSig, bool ySig, bool gSig*/ S_Matrix3 const& matrix) {
-  // digitalWrite(light.rLed, rSig);
-  // digitalWrite(light.yLed, ySig);
-  // digitalWrite(light.gLed, gSig);
+void ledOn(S_Light& light, S_Matrix3 const& matrix) {
   digitalWrite(light.rLed, matrix.fst);
   digitalWrite(light.yLed, matrix.scn);
   digitalWrite(light.gLed, matrix.thr);
